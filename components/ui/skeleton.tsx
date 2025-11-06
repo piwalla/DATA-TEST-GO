@@ -1,0 +1,56 @@
+/**
+ * @file components/ui/skeleton.tsx
+ * @description 스켈레톤 UI 컴포넌트
+ *
+ * 로딩 중 콘텐츠의 레이아웃을 표시하는 스켈레톤 컴포넌트입니다.
+ * design.md 스타일을 적용했습니다 (animate-pulse).
+ */
+
+import { cn } from '@/lib/utils';
+
+interface SkeletonProps {
+  className?: string;
+}
+
+export function Skeleton({ className }: SkeletonProps) {
+  return (
+    <div
+      className={cn('animate-pulse rounded-md bg-muted', className)}
+      aria-label="로딩 중"
+    />
+  );
+}
+
+/**
+ * 카드 스켈레톤 (관광지 카드용)
+ */
+export function CardSkeleton() {
+  return (
+    <div className="rounded-xl border border-border bg-card shadow-md">
+      <Skeleton className="h-48 w-full rounded-t-xl" />
+      <div className="p-4 space-y-3">
+        <Skeleton className="h-6 w-3/4" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-2/3" />
+        <div className="flex gap-2">
+          <Skeleton className="h-6 w-16 rounded-full" />
+          <Skeleton className="h-6 w-20 rounded-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * 리스트 스켈레톤 (관광지 목록용)
+ */
+export function ListSkeleton({ count = 6 }: { count?: number }) {
+  return (
+    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <CardSkeleton key={i} />
+      ))}
+    </div>
+  );
+}
+

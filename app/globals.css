@@ -41,6 +41,15 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  
+  /* My Trip 디자인 시스템 컬러 (design.md 참고) */
+  --color-primary-blue: #2B7DE9;
+  --color-primary-teal: #00BFA6;
+  --color-accent-orange: #FF6B35;
+  --color-success: #28A745;
+  --color-warning: #FFC107;
+  --color-error: #DC3545;
+  --color-info: #17A2B8;
 }
 
 :root {
@@ -118,8 +127,23 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-geist-sans), 'Pretendard', 'Noto Sans KR', 'Inter', 'Helvetica Neue', sans-serif;
   }
   main {
     @apply max-w-7xl mx-auto pt-16 px-4;
+  }
+  
+  /* 폰트 크기 시스템 (design.md 참고) */
+  .text-display {
+    @apply text-5xl;
+  }
+  .text-h1 {
+    @apply text-4xl;
+  }
+  .text-h2 {
+    @apply text-3xl;
+  }
+  .text-h3 {
+    @apply text-2xl;
   }
 }
