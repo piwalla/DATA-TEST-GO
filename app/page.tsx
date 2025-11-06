@@ -22,17 +22,21 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { Search, Map, List } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import type { TourItem } from '@/lib/types/tour';
 import { getAreaBasedList, searchKeyword as searchKeywordApi } from '@/actions/tour';
 import { TourList } from '@/components/tour-list';
-import { TourFilters, type FilterState, type SortOption } from '@/components/tour-filters';
+import { TourFilters, type FilterState } from '@/components/tour-filters';
 import { ListSkeleton } from '@/components/ui/skeleton';
 import { Error } from '@/components/ui/error';
+import { NaverMap } from '@/components/naver-map';
+import { Pagination } from '@/components/pagination';
 
 export default function Home() {
   // 모바일: 리스트/지도 탭 전환 상태
   const [activeTab, setActiveTab] = useState<'list' | 'map'>('list');
+
+  // 리스트-지도 연동: 선택된 관광지 ID
+  const [selectedTourId, setSelectedTourId] = useState<string | null>(null);
 
   // 검색 상태
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // 검색 키워드
@@ -49,14 +53,21 @@ export default function Home() {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const itemsPerPage = 20; // 페이지당 항목 수
 
-  // 검색 또는 필터 변경 시 관광지 목록 로드
+  // 검색 또는 필터 변경 시 첫 페이지로 리셋
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchKeyword, filters.areaCode, filters.contentTypeId]);
+
+  // 검색, 필터, 페이지 변경 시 관광지 목록 로드
   useEffect(() => {
     async function loadTours() {
       try {
         setIsLoading(true);
         setError(null);
-        console.log('[Home] 관광지 목록 로드 시작...', { searchKeyword, filters });
+        console.log('[Home] 관광지 목록 로드 시작...', { searchKeyword, filters, currentPage });
         
         // 필터 파라미터 설정
         // 빈 문자열('')이면 전체를 의미하므로 undefined로 변환
@@ -67,21 +78,21 @@ export default function Home() {
         
         // 검색 키워드가 있으면 검색 API 사용, 없으면 필터 API 사용
         if (searchKeyword.trim()) {
-          console.log('[Home] 검색 모드:', searchKeyword);
+          console.log('[Home] 검색 모드:', searchKeyword, '페이지:', currentPage);
           result = await searchKeywordApi(
             searchKeyword.trim(),
             areaCode,
             contentTypeId,
-            20,
-            1
+            itemsPerPage,
+            currentPage
           );
         } else {
-          console.log('[Home] 필터 모드');
+          console.log('[Home] 필터 모드, 페이지:', currentPage);
           result = await getAreaBasedList(
             areaCode,
             contentTypeId,
-            20,
-            1
+            itemsPerPage,
+            currentPage
           );
         }
 
@@ -90,20 +101,27 @@ export default function Home() {
         setTotalCount(result.totalCount || result.items.length); // totalCount가 없으면 items.length 사용
       } catch (err) {
         console.error('[Home] 관광지 목록 로드 실패:', err);
-        setError(
-          err instanceof Error
-            ? err.message
-            : '관광지 목록을 불러오는 중 오류가 발생했습니다.'
-        );
+        let errorMessage = '관광지 목록을 불러오는 중 오류가 발생했습니다.';
+        if (err instanceof Error) {
+          errorMessage = (err as Error).message;
+        } else if (typeof err === 'string') {
+          errorMessage = err;
+        } else if (err && typeof err === 'object' && 'message' in err) {
+          errorMessage = String((err as { message: unknown }).message);
+        }
+        setError(errorMessage);
       } finally {
         setIsLoading(false);
       }
     }
 
     loadTours();
-  }, [searchKeyword, filters.areaCode, filters.contentTypeId]); // 검색 키워드 또는 필터 변경 시 재호출
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKeyword, filters.areaCode, filters.contentTypeId, currentPage]); // 검색 키워드, 필터, 페이지 변경 시 재호출
 
-  // 정렬된 관광지 목록
+  // 정렬된 관광지 목록 (클라이언트 사이드 정렬)
+  // API에서 받은 데이터를 클라이언트에서 정렬
+  // 참고: API에서 정렬 옵션을 지원하지 않으므로 클라이언트 사이드 정렬 사용
   const sortedTours = useMemo(() => {
     const sorted = [...tours];
     
@@ -121,6 +139,16 @@ export default function Home() {
     
     return sorted;
   }, [tours, filters.sortBy]);
+
+  // 전체 페이지 수 계산
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // 페이지 변경 시 스크롤을 상단으로 이동
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -185,7 +213,7 @@ export default function Home() {
       <TourFilters filters={filters} onFiltersChange={setFilters} />
 
       {/* 메인 콘텐츠 영역 */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pb-64">
         {/* 모바일: 탭 전환 버튼 */}
         <div className="lg:hidden mb-6 flex gap-2 border-b">
           <button
@@ -215,9 +243,9 @@ export default function Home() {
         </div>
 
         {/* 데스크톱: 리스트 + 지도 분할 레이아웃 */}
-        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6 lg:h-[calc(100vh-400px)]">
+        <div className="hidden lg:grid lg:grid-cols-2 lg:gap-6">
           {/* 좌측: 관광지 목록 영역 (50%) */}
-          <div className="overflow-y-auto pr-4">
+          <div className="overflow-y-auto pr-4 max-h-[calc(2.5*(100vh-500px))]">
             <div className="space-y-4">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-2xl font-semibold">
@@ -242,20 +270,41 @@ export default function Home() {
                   }}
                 />
               ) : (
-                <TourList tours={sortedTours} searchKeyword={searchKeyword || undefined} />
+                <>
+                  <TourList
+                    tours={sortedTours}
+                    searchKeyword={searchKeyword || undefined}
+                    onTourClick={(tour) => {
+                      // 리스트-지도 연동: 선택된 관광지로 지도 이동
+                      setSelectedTourId(tour.contentid);
+                    }}
+                  />
+                  {/* 페이지네이션 */}
+                  {totalPages > 1 && (
+                    <div className="mt-8">
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
 
           {/* 우측: 네이버 지도 영역 (50%) */}
-          <div className="border rounded-lg overflow-hidden bg-muted">
-            <div className="h-full flex items-center justify-center text-muted-foreground">
-              <div className="text-center">
-                <Map className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p className="text-lg">네이버 지도가 여기에 표시됩니다</p>
-                <p className="text-sm mt-2">Phase 2.5에서 구현 예정</p>
-              </div>
-            </div>
+          <div className="border rounded-lg overflow-hidden bg-muted h-[calc(2.5*(100vh-500px))]">
+            <NaverMap
+              tours={sortedTours}
+              selectedTourId={selectedTourId}
+              onMarkerClick={(tour) => {
+                // 마커 클릭 시 선택 상태 업데이트 (선택적)
+                setSelectedTourId(tour.contentid);
+              }}
+              className="h-full"
+            />
           </div>
         </div>
 
@@ -271,6 +320,11 @@ export default function Home() {
                 {!isLoading && !error && totalCount > 0 && (
                   <span className="text-sm text-muted-foreground">
                     총 {totalCount.toLocaleString()}개
+                    {totalPages > 1 && (
+                      <span className="ml-2">
+                        (페이지 {currentPage} / {totalPages})
+                      </span>
+                    )}
                   </span>
                 )}
               </div>
@@ -287,7 +341,19 @@ export default function Home() {
                   }}
                 />
               ) : (
-                <TourList tours={sortedTours} searchKeyword={searchKeyword || undefined} />
+                <>
+                  <TourList tours={sortedTours} searchKeyword={searchKeyword || undefined} />
+                  {/* 페이지네이션 */}
+                  {totalPages > 1 && (
+                    <div className="mt-8">
+                      <Pagination
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={handlePageChange}
+                      />
+                    </div>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -295,13 +361,15 @@ export default function Home() {
           {/* 지도 탭 */}
           {activeTab === 'map' && (
             <div className="border rounded-lg overflow-hidden bg-muted min-h-[400px]">
-              <div className="h-full min-h-[400px] flex items-center justify-center text-muted-foreground">
-                <div className="text-center">
-                  <Map className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg">네이버 지도가 여기에 표시됩니다</p>
-                  <p className="text-sm mt-2">Phase 2.5에서 구현 예정</p>
-                </div>
-              </div>
+              <NaverMap
+                tours={sortedTours}
+                selectedTourId={selectedTourId}
+                onMarkerClick={(tour) => {
+                  // 마커 클릭 시 선택 상태 업데이트 (선택적)
+                  setSelectedTourId(tour.contentid);
+                }}
+                className="min-h-[400px]"
+              />
             </div>
           )}
         </div>

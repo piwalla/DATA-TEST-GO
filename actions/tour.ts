@@ -96,19 +96,46 @@ async function fetchTourApi<T>(
       );
     }
 
-    const data: TourApiResponse<T> = await response.json();
+    const data: any = await response.json();
+
+    // API 응답 구조 확인
+    if (!data) {
+      console.error(`[Tour API] 응답이 없음 (${endpoint}):`, data);
+      throw new Error(`API 응답이 없습니다. (${endpoint})`);
+    }
+
+    // 에러 응답 처리 (response 필드가 없는 경우)
+    if (!data.response) {
+      // 에러 응답 구조: { responseTime, resultCode, resultMsg }
+      if (data.resultCode && data.resultMsg) {
+        console.error(`[Tour API] API 오류 (${endpoint}):`, data);
+        throw new Error(`API 오류: ${data.resultCode} - ${data.resultMsg}`);
+      }
+      
+      // 다른 응답 구조인 경우 - 전체 응답 로깅
+      console.error(`[Tour API] 잘못된 응답 구조 (${endpoint}):`, JSON.stringify(data, null, 2));
+      throw new Error(`API 응답 구조가 올바르지 않습니다. (${endpoint}) - response 필드가 없습니다.`);
+    }
+
+    if (!data.response.header) {
+      console.error(`[Tour API] header가 없음 (${endpoint}):`, JSON.stringify(data, null, 2));
+      throw new Error(`API 응답에 header가 없습니다. (${endpoint})`);
+    }
 
     // API 응답 코드 확인
     if (data.response.header.resultCode !== '0000') {
       throw new Error(
-        `API 오류: ${data.response.header.resultCode} - ${data.response.header.resultMsg}`
+        `API 오류: ${data.response.header.resultCode} - ${data.response.header.resultMsg || '알 수 없는 오류'}`
       );
     }
 
-    return data;
+    return data as TourApiResponse<T>;
   } catch (error) {
     console.error(`[Tour API] 에러 (${endpoint}):`, error);
-    throw error;
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(`API 호출 중 알 수 없는 오류가 발생했습니다. (${endpoint})`);
   }
 }
 
@@ -162,10 +189,13 @@ export async function getAreaBasedList(
 
   const items = response.response.body.items;
   const itemArray = Array.isArray(items.item) ? items.item : items.item ? [items.item] : [];
+  
+  // totalCount는 body에 직접 있음
+  const totalCount = response.response.body.totalCount || itemArray.length;
 
   return {
     items: itemArray,
-    totalCount: items.totalCount,
+    totalCount,
   };
 }
 
@@ -203,10 +233,13 @@ export async function searchKeyword(
 
   const items = response.response.body.items;
   const itemArray = Array.isArray(items.item) ? items.item : items.item ? [items.item] : [];
+  
+  // totalCount는 body에 직접 있음
+  const totalCount = response.response.body.totalCount || itemArray.length;
 
   return {
     items: itemArray,
-    totalCount: items.totalCount,
+    totalCount,
   };
 }
 
@@ -218,13 +251,11 @@ export async function searchKeyword(
 export async function getDetailCommon(
   contentId: string
 ): Promise<TourDetail | null> {
+  // 일부 배포 환경에서 defaultYN/overviewYN 파라미터가 거부되는 사례가 있어
+  // 최소 파라미터로 먼저 요청합니다.
+  // 필요한 필드는 API 기본 응답(default)에서 대부분 제공됩니다.
   const response = await fetchTourApi<TourDetail>('/detailCommon2', {
     contentId,
-    defaultYN: 'Y',
-    overviewYN: 'Y',
-    addrinfoYN: 'Y',
-    homepageYN: 'Y',
-    mapinfoYN: 'Y',
   });
 
   const items = response.response.body.items;

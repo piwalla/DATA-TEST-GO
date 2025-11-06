@@ -27,6 +27,7 @@ interface TourListProps {
   tours: TourItem[];
   className?: string;
   searchKeyword?: string; // 검색 키워드 (선택적, 빈 목록 메시지 개선용)
+  onTourClick?: (tour: TourItem) => void; // 관광지 클릭 콜백 (리스트-지도 연동용, 선택적)
 }
 
 /**
@@ -34,8 +35,9 @@ interface TourListProps {
  * @param tours - TourItem 배열
  * @param className - 추가 CSS 클래스
  * @param searchKeyword - 검색 키워드 (선택적)
+ * @param onTourClick - 관광지 클릭 콜백 (선택적, 리스트-지도 연동용)
  */
-export function TourList({ tours, className, searchKeyword }: TourListProps) {
+export function TourList({ tours, className, searchKeyword, onTourClick }: TourListProps) {
   // 빈 목록 처리
   if (tours.length === 0) {
     return (
@@ -60,7 +62,7 @@ export function TourList({ tours, className, searchKeyword }: TourListProps) {
     >
       {tours.map((tour) => (
         <div key={tour.contentid} role="listitem">
-          <TourCard tour={tour} />
+          <TourCard tour={tour} onClick={onTourClick ? () => onTourClick(tour) : undefined} />
         </div>
       ))}
     </div>

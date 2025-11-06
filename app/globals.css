@@ -130,7 +130,7 @@
     font-family: var(--font-geist-sans), 'Pretendard', 'Noto Sans KR', 'Inter', 'Helvetica Neue', sans-serif;
   }
   main {
-    @apply max-w-7xl mx-auto pt-16 px-4;
+    @apply max-w-7xl mx-auto pt-16 px-4 pb-64;
   }
   
   /* 폰트 크기 시스템 (design.md 참고) */

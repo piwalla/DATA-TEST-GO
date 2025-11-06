@@ -33,13 +33,15 @@ import { Badge } from '@/components/ui/badge';
 
 interface TourCardProps {
   tour: TourItem;
+  onClick?: () => void; // 추가 클릭 핸들러 (리스트-지도 연동용, 선택적)
 }
 
 /**
  * 관광지 카드 컴포넌트
  * @param tour - TourItem 객체
+ * @param onClick - 추가 클릭 핸들러 (선택적, 리스트-지도 연동용)
  */
-export function TourCard({ tour }: TourCardProps) {
+export function TourCard({ tour, onClick }: TourCardProps) {
   // 이미지 URL 처리 (firstimage 또는 firstimage2)
   const imageUrl = tour.firstimage || tour.firstimage2;
   const hasImage = !!imageUrl;
@@ -55,6 +57,7 @@ export function TourCard({ tour }: TourCardProps) {
       href={`/places/${tour.contentid}`}
       className="group block rounded-xl shadow-md overflow-hidden bg-card border border-border hover:scale-[1.02] hover:shadow-xl transition-all duration-300"
       aria-label={`${tour.title} 상세보기`}
+      onClick={onClick} // 리스트-지도 연동용 클릭 핸들러
     >
       {/* 이미지 영역 (16:9 비율) */}
       <div className="relative w-full aspect-video overflow-hidden bg-muted">
@@ -65,7 +68,9 @@ export function TourCard({ tour }: TourCardProps) {
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-300"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            unoptimized // 외부 이미지 URL이므로 Next.js 최적화 비활성화 (향후 next.config.ts에서 도메인 추가 필요)
+            loading="lazy"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-blue/20 to-primary-teal/20">

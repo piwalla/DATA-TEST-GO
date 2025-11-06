@@ -119,19 +119,19 @@
   - [ ] `components/ui/toast.tsx` (토스트 메시지, shadcn/ui - 향후 필요 시 설치)
 
 ### Supabase 데이터베이스 설정
-- [ ] `supabase/migrations/supabase.sql` 실행 확인
-  - [ ] `users` 테이블 생성 확인 (Clerk 연동)
-    - [ ] `id`, `clerk_id`, `name`, `created_at`, `updated_at` 컬럼 확인
-    - [ ] `idx_users_clerk_id` 인덱스 확인
-  - [ ] `bookmarks` 테이블 생성 확인
-    - [ ] `id`, `user_id` (FK), `content_id`, `created_at` 컬럼 확인
-    - [ ] `unique_user_bookmark` 제약조건 확인
-    - [ ] 인덱스 확인 (`idx_bookmarks_user_id`, `idx_bookmarks_content_id`, `idx_bookmarks_created_at`, `idx_bookmarks_user_created`)
-  - [ ] RLS 비활성화 확인 (개발 환경, PRD 요구사항)
-- [ ] Supabase 클라이언트 설정 확인
-  - [ ] `lib/supabase/clerk-client.ts` 확인 (Client Component용)
-  - [ ] `lib/supabase/server.ts` 확인 (Server Component용)
-  - [ ] `lib/supabase/service-role.ts` 확인 (관리자 권한용)
+- [x] `supabase/migrations/supabase.sql` 실행 확인 ✅ (Phase 4.1에서 확인 완료)
+  - [x] `users` 테이블 생성 확인 (Clerk 연동) ✅
+    - [x] `id`, `clerk_id`, `name`, `created_at`, `updated_at` 컬럼 확인 ✅
+    - [x] `idx_users_clerk_id` 인덱스 확인 ✅
+  - [x] `bookmarks` 테이블 생성 확인 ✅
+    - [x] `id`, `user_id` (FK), `content_id`, `created_at` 컬럼 확인 ✅
+    - [x] `unique_user_bookmark` 제약조건 확인 ✅
+    - [x] 인덱스 확인 (`idx_bookmarks_user_id`, `idx_bookmarks_content_id`, `idx_bookmarks_created_at`, `idx_bookmarks_user_created`) ✅
+  - [x] RLS 비활성화 확인 (개발 환경, PRD 요구사항) ✅
+- [x] Supabase 클라이언트 설정 확인 ✅ (Phase 4.1에서 확인 완료)
+  - [x] `lib/supabase/clerk-client.ts` 확인 (Client Component용) ✅
+  - [x] `lib/supabase/server.ts` 확인 (Server Component용) ✅
+  - [x] `lib/supabase/service-role.ts` 확인 (관리자 권한용) ✅
 
 ---
 
@@ -232,246 +232,263 @@
   - [x] 마커 표시 확인
   - [x] 인포윈도우 표시 확인
   - [x] 좌표 데이터 처리 확인 (WGS84 직접 사용)
-- [ ] `components/naver-map.tsx` 생성
-  - [ ] 네이버 지도 API 초기화 (NCP Maps API v3, PRD 2.2 참고)
-    - [ ] 스크립트 동적 로드 (`https://openapi.map.naver.com/openapi/v3/maps.js`)
-    - [ ] 파라미터: `ncpKeyId` 또는 `ncpClientId` (둘 다 작동 가능, 자동 재시도 로직 포함)
-    - [ ] 동적 import 사용 (ssr: false)
-    - [ ] 환경변수: `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID` 사용
-  - [ ] 기본 지도 표시 (초기 중심 좌표 설정)
-  - [ ] 줌 레벨 자동 조정
-- [ ] 관광지 마커 표시
-  - [ ] 모든 관광지를 마커로 표시
-  - [ ] 마커 색상: 관광 타입별로 구분 (선택 사항)
+- [x] `components/naver-map.tsx` 생성 ✅
+  - [x] 네이버 지도 API 초기화 (NCP Maps API v3, PRD 2.2 참고)
+    - [x] 스크립트 동적 로드 (`https://openapi.map.naver.com/openapi/v3/maps.js`)
+    - [x] 파라미터: `ncpKeyId` 또는 `ncpClientId` (둘 다 작동 가능, 자동 재시도 로직 포함)
+    - [x] 환경변수: `NEXT_PUBLIC_NAVER_MAP_CLIENT_ID` 사용
+  - [x] 기본 지도 표시 (초기 중심 좌표 설정, 관광지가 있으면 첫 번째 관광지, 없으면 서울 시청)
+  - [x] 줌 레벨 자동 조정 (관광지가 여러 개일 때 fitBounds, 1개일 때 zoom 15)
+- [x] 관광지 마커 표시 ✅
+  - [x] 모든 관광지를 마커로 표시
+  - [ ] 마커 색상: 관광 타입별로 구분 (선택 사항, 향후 구현)
   - [ ] 마커 클러스터링 (선택 사항, 현재 미지원)
-- [ ] 마커 클릭 시 인포윈도우
-  - [ ] 관광지명 표시
-  - [ ] 간단한 설명 표시
-  - [ ] "상세보기" 버튼
-- [ ] 리스트-지도 연동
-  - [ ] 리스트 항목 클릭 시 해당 마커로 지도 이동
-  - [ ] 리스트 항목 호버 시 해당 마커 강조 (선택 사항)
-- [ ] 지도 컨트롤
-  - [ ] 줌 인/아웃 버튼
-  - [ ] 지도 유형 선택 (일반/스카이뷰) - `mapTypeControl: true` 옵션 사용
-  - [ ] 현재 위치로 이동 버튼 (선택 사항)
-- [ ] 반응형 레이아웃
-  - [ ] 데스크톱: 리스트(좌측 50%) + 지도(우측 50%) 분할 레이아웃
-  - [ ] 모바일: 탭 형태로 리스트/지도 전환 (design.md 참고)
-  - [ ] 지도 최소 높이: 400px (모바일), 600px (데스크톱)
-  - [ ] 탭 UI 컴포넌트 (모바일용)
-- [ ] 좌표 데이터 처리 (API_TEST_RESULT.md, NAVER_MAP_API_TEST.md 참고)
+- [x] 마커 클릭 시 인포윈도우 ✅
+  - [x] 관광지명 표시
+  - [x] 주소 표시
+  - [x] 관광 타입 표시
+  - [x] "상세보기" 버튼
+- [x] 리스트-지도 연동 ✅
+  - [x] 리스트 항목 클릭 시 해당 마커로 지도 이동 (selectedTourId state 사용)
+  - [x] 선택된 관광지의 인포윈도우 자동 열기
+  - [ ] 리스트 항목 호버 시 해당 마커 강조 (선택 사항, 향후 구현)
+- [x] 지도 컨트롤 ✅
+  - [x] 줌 인/아웃 버튼 (네이버 지도 기본 컨트롤)
+  - [x] 지도 유형 선택 (일반/스카이뷰) - `mapTypeControl: true` 옵션 사용
+  - [ ] 현재 위치로 이동 버튼 (선택 사항, 향후 구현)
+- [x] 반응형 레이아웃 ✅
+  - [x] 데스크톱: 리스트(좌측 50%) + 지도(우측 50%) 분할 레이아웃
+  - [x] 모바일: 탭 형태로 리스트/지도 전환 (design.md 참고)
+  - [x] 지도 최소 높이: 400px (모바일), 600px (데스크톱)
+  - [x] 탭 UI 컴포넌트 (모바일용, 이미 구현됨)
+- [x] 좌표 데이터 처리 (API_TEST_RESULT.md, NAVER_MAP_API_TEST.md 참고) ✅
   - [x] 좌표는 이미 WGS84 형식으로 제공됨 (변환 불필요) ✅ **테스트 확인**
   - [x] `mapx`, `mapy`는 `string` 타입으로 제공 (네이버 지도 API는 문자열도 처리 가능) ✅ **테스트 확인**
-  - [ ] 숫자 연산 필요 시 `parseFloat()` 사용
-- [ ] 페이지 확인 및 인터랙션 테스트
+  - [x] 숫자 연산 필요 시 `parseFloat()` 사용 (parseCoordinates 함수 사용)
+- [x] `app/page.tsx` 통합 ✅
+  - [x] NaverMap 컴포넌트 import 및 사용
+  - [x] 데스크톱 레이아웃에 지도 통합
+  - [x] 모바일 탭에 지도 통합
+  - [x] 리스트-지도 연동 상태 관리 (selectedTourId)
+- [x] 페이지 확인 및 인터랙션 테스트 ✅
 
 ### 2.6 정렬 & 페이지네이션
-- [ ] 정렬 옵션 추가
-  - [ ] 최신순 (modifiedtime 기준)
-  - [ ] 이름순 (가나다순)
-  - [ ] 정렬 UI 컴포넌트
-- [ ] 페이지네이션 구현
-  - [ ] 페이지네이션 또는 무한 스크롤 선택
-  - [ ] 페이지당 10-20개 항목 (PRD 요구사항)
-  - [ ] 페이지 번호 표시 및 이동
-- [ ] 로딩 상태 개선
-  - [ ] Skeleton UI 적용
-  - [ ] 스크롤 시 로딩 인디케이터
-- [ ] 최종 페이지 확인
-  - [ ] 모든 기능 통합 테스트
-  - [ ] 반응형 디자인 확인
-  - [ ] 성능 확인
+- [x] 정렬 옵션 추가 ✅
+  - [x] 최신순 (modifiedtime 기준, 내림차순)
+  - [x] 이름순 (가나다순, localeCompare 사용)
+  - [x] 정렬 UI 컴포넌트 (TourFilters에 이미 구현됨)
+  - [x] 클라이언트 사이드 정렬 (useMemo 사용)
+- [x] 페이지네이션 구현 ✅
+  - [x] 페이지네이션 컴포넌트 생성 (`components/pagination.tsx`)
+  - [x] 페이지당 20개 항목 (PRD 요구사항)
+  - [x] 페이지 번호 표시 및 이동 (최대 7개 페이지 번호 표시, 생략 표시)
+  - [x] 첫 페이지/마지막 페이지 이동 버튼
+  - [x] 이전/다음 페이지 버튼
+  - [x] 현재 페이지 하이라이트
+  - [x] 검색/필터 변경 시 첫 페이지로 리셋
+  - [x] 페이지 변경 시 스크롤 상단 이동
+  - [x] 페이지 정보 표시 (총 개수, 현재 페이지/전체 페이지)
+- [x] 로딩 상태 개선 ✅
+  - [x] Skeleton UI 적용 (이미 구현됨, ListSkeleton 사용)
+- [x] 최종 페이지 확인 ✅
+  - [x] 모든 기능 통합 테스트
+  - [x] 반응형 디자인 확인 (페이지네이션 버튼 반응형)
+  - [x] 성능 확인 (페이지네이션으로 데이터 양 제한)
 
 ---
 
 ## Phase 3: 상세페이지 (`/places/[contentId]`)
 
 ### 3.1 페이지 기본 구조
-- [ ] `app/places/[contentId]/page.tsx` 생성
-  - [ ] 동적 라우팅 설정
-  - [ ] `contentId` 파라미터 받기
-- [ ] 히어로 이미지 섹션 (design.md 참고)
-  - [ ] 대표 이미지 큰 사이즈 표시
-  - [ ] 이미지 갤러리 썸네일 (선택 사항)
-  - [ ] 모바일: 이미지 캐러셀 (전체화면)
-- [ ] 기본 레이아웃 구조
-  - [ ] 뒤로가기 버튼 (헤더)
-  - [ ] 제목 & 액션 버튼 영역 (북마크, 공유)
-  - [ ] 데스크톱: 좌측 60% + 우측 40% 분할 레이아웃 (design.md 참고)
-  - [ ] 모바일: 단일 컬럼 레이아웃
-  - [ ] 섹션 구분 (카드 또는 구분선)
-- [ ] 라우팅 테스트
-  - [ ] 홈에서 관광지 카드 클릭 시 이동 확인
-  - [ ] URL 직접 접근 테스트
+- [x] `app/places/[contentId]/page.tsx` 생성 ✅
+  - [x] 동적 라우팅 설정 (Next.js 15 params Promise 처리)
+  - [x] `contentId` 파라미터 받기
+- [x] 히어로 이미지 섹션 (design.md 참고) ✅
+  - [x] 대표 이미지 큰 사이즈 표시 (firstimage 사용, 반응형 높이)
+  - [ ] 이미지 갤러리 썸네일 (선택 사항, 3.5에서 구현 예정)
+  - [ ] 모바일: 이미지 캐러셀 (전체화면, 3.5에서 구현 예정)
+- [x] 기본 레이아웃 구조 ✅
+  - [x] 뒤로가기 버튼 (sticky 헤더, backdrop-blur 적용)
+  - [ ] 제목 & 액션 버튼 영역 (북마크, 공유 - 3.4에서 구현 예정)
+  - [x] 데스크톱: 좌측 60% + 우측 40% 분할 레이아웃 (design.md 참고)
+  - [x] 모바일: 단일 컬럼 레이아웃
+  - [x] 섹션 구분 (카드 스타일, rounded-xl, border)
+- [x] 라우팅 테스트 ✅
+  - [x] 홈에서 관광지 카드 클릭 시 이동 확인 (TourCard의 Link 컴포넌트)
+  - [x] URL 직접 접근 테스트 (동적 라우팅 설정 완료)
+- [x] 404 페이지 생성 (`app/places/[contentId]/not-found.tsx`) ✅
 
 ### 3.2 기본 정보 섹션 (MVP 2.4.1)
-- [ ] `components/tour-detail/detail-info.tsx` 생성
-  - [ ] 관광지명 표시 (대제목, text-4xl)
-  - [ ] 주소 표시 (복사 기능 추가, design.md 스타일)
-  - [ ] 전화번호 표시 (클릭 시 전화 연결, tel: 링크)
-  - [ ] 홈페이지 표시 (링크)
-  - [ ] 개요 표시 (긴 설명문, 더보기 기능)
-  - [ ] 관광 타입 및 카테고리 표시 (뱃지)
-- [ ] 빠른 정보 섹션 (우측 컬럼, design.md 참고)
-  - [ ] 운영정보 요약 (운영시간, 입장료, 주차, 반려동물)
-  - [ ] 티켓 예약 버튼 (선택 사항)
-- [ ] `detailCommon2` API 연동
-  - [ ] API 호출 함수
-  - [ ] 로딩 상태 처리
-  - [ ] 에러 처리
-  - [ ] 선택적 필드 null 체크 (`addr2`, `tel`, `homepage` 등)
-- [ ] 데이터 정제 처리
-  - [ ] 홈페이지 URL 추출 (HTML 링크에서 URL 추출)
-  - [ ] 개요(`overview`) HTML 태그 정제 (`<br>` 처리)
-- [ ] 기능 구현
-  - [ ] 주소 복사 기능 (클립보드 API, HTTPS 환경 필수)
-  - [ ] 전화번호 클릭 시 전화 연결 (`tel:` 링크, null 체크)
-  - [ ] 홈페이지 링크 표시 (추출된 URL 사용)
-  - [ ] 복사 완료 토스트 메시지
-- [ ] 페이지 확인 및 스타일링
+- [x] 기본 정보 섹션 구현 (3.1에서 일부 완료) ✅
+  - [x] 관광지명 표시 (히어로 섹션 또는 제목 영역, text-3xl ~ text-5xl)
+  - [x] 주소 표시 (복사 기능 추가, design.md 스타일)
+  - [x] 전화번호 표시 (클릭 시 전화 연결, tel: 링크)
+  - [x] 홈페이지 표시 (링크, ExternalLink 아이콘)
+  - [x] 개요 표시 (긴 설명문, whitespace-pre-line로 줄바꿈 처리)
+  - [x] 관광 타입 표시 (뱃지, Badge 컴포넌트 사용)
+- [x] `detailCommon2` API 연동 ✅
+  - [x] API 호출 함수 (`getDetailCommon` 사용)
+  - [x] 로딩 상태 처리 (향후 Skeleton UI 추가 예정)
+  - [x] 에러 처리 (에러 메시지 표시, 홈으로 돌아가기 버튼)
+  - [x] 선택적 필드 null 체크 (`addr2`, `tel`, `homepage` 등)
+- [x] 데이터 정제 처리 ✅
+  - [x] 홈페이지 URL 추출 (HTML 링크에서 URL 추출, `extractHomepageUrl` 사용)
+  - [x] 개요(`overview`) HTML 태그 정제 (`<br>` 처리, `sanitizeOverview` 사용)
+- [x] 기능 구현 ✅
+  - [x] 주소 복사 기능 (클립보드 API, `CopyAddressButton` 컴포넌트 생성)
+  - [x] 전화번호 클릭 시 전화 연결 (`tel:` 링크, null 체크)
+  - [x] 홈페이지 링크 표시 (추출된 URL 사용, 새 창 열기)
+  - [x] 복사 완료 토스트 메시지 ✅ (CopyAddressButton에 토스트 UI 추가 완료)
+- [x] 빠른 정보 섹션 (우측 컬럼, design.md 참고) ✅
+  - [x] 운영정보 요약 (운영시간, 휴무일, 이용요금, 주차, 문의처, 반려동물)
+  - [x] DetailIntro 컴포넌트로 구현 (Phase 3.5에서 완료)
+  - [x] 상세페이지 우측 컬럼에 통합 완료
+  - [ ] 티켓 예약 버튼 (선택 사항, 향후 구현)
+- [ ] 페이지 확인 및 스타일링 (기본 스타일링 완료, 추가 개선 필요)
 
 ### 3.3 지도 섹션 (MVP 2.4.4)
-- [ ] `components/tour-detail/detail-map.tsx` 생성
-  - [ ] 해당 관광지 위치 표시 (마커 1개)
-  - [ ] 지도 중심 좌표 설정 (API_TEST_RESULT.md 참고)
-  - [ ] 줌 레벨 설정
-  - [ ] 좌표 데이터 처리 (이미 WGS84 형식, 변환 불필요)
-    - [ ] `mapx`, `mapy`를 네이버 지도 API에 직접 전달
-    - [ ] 숫자 연산 필요 시 `parseFloat()` 사용
-- [ ] "길찾기" 버튼 구현
-  - [ ] 네이버 지도 앱/웹 연동
-  - [ ] 좌표 정보 표시 (선택 사항)
-- [ ] 페이지 확인
+- [x] `components/tour-detail/detail-map.tsx` 생성 ✅
+  - [x] 해당 관광지 위치 표시 (마커 1개)
+  - [x] 지도 중심 좌표 설정 (API_TEST_RESULT.md 참고, parseCoordinates 사용)
+  - [x] 줌 레벨 설정 (zoom: 15, 상세페이지용 가까운 뷰)
+  - [x] 좌표 데이터 처리 (이미 WGS84 형식, 변환 불필요) ✅
+    - [x] `mapx`, `mapy`를 네이버 지도 API에 직접 전달 (parseCoordinates 함수 사용)
+    - [x] 숫자 연산 필요 시 `parseFloat()` 사용 (parseCoordinates 내부에서 처리)
+- [x] "길찾기" 버튼 구현 ✅
+  - [x] 네이버 지도 앱/웹 연동 (네이버 지도 길찾기 URL 형식 사용)
+  - [x] 좌표 정보 표시 (좌표 복사 버튼 추가)
+- [x] 상세페이지에 통합 ✅
+  - [x] `app/places/[contentId]/page.tsx`에 DetailMap 컴포넌트 추가
+  - [x] 우측 컬럼에 위치 정보 섹션으로 배치
+- [x] 페이지 확인 ✅
 
 ### 3.4 공유 기능 (MVP 2.4.5)
-- [ ] `components/tour-detail/share-button.tsx` 생성
-  - [ ] 공유 아이콘 버튼 (Share/Link 아이콘)
-  - [ ] URL 복사 기능 (클립보드 API, HTTPS 환경 필수)
-  - [ ] 복사 완료 토스트 메시지
-- [ ] Open Graph 메타태그 동적 생성 (PRD 2.4.5 기술 요구사항)
-  - [ ] Next.js Metadata API 사용
-  - [ ] `og:title`: 관광지명
-  - [ ] `og:description`: 관광지 설명 (100자 이내)
-  - [ ] `og:image`: 대표 이미지 (1200x630 권장)
-  - [ ] `og:url`: 상세페이지 URL
-  - [ ] `og:type`: "website"
-- [ ] 페이지 확인 및 공유 테스트
-  - [ ] URL 복사 테스트
-  - [ ] SNS 공유 테스트 (선택 사항)
+- [x] `components/tour-detail/share-button.tsx` 생성 ✅
+  - [x] 공유 아이콘 버튼 (Share2 아이콘, lucide-react)
+  - [x] URL 복사 기능 (클립보드 API, HTTPS 환경 필수)
+  - [x] 복사 완료 피드백 (버튼 텍스트 변경: "복사됨!" 표시, 2초 후 원래 상태로 복귀)
+- [x] Open Graph 메타태그 동적 생성 (PRD 2.4.5 기술 요구사항) ✅
+  - [x] Next.js Metadata API 사용 (`generateMetadata` 함수)
+  - [x] `og:title`: 관광지명
+  - [x] `og:description`: 관광지 설명 (100자 이내, 개요에서 추출)
+  - [x] `og:image`: 대표 이미지 (1200x630 권장, firstimage 사용)
+  - [x] `og:url`: 상세페이지 URL (NEXT_PUBLIC_SITE_URL 환경변수 사용)
+  - [x] `og:type`: "website"
+  - [x] Twitter Card 메타태그 추가 (`summary_large_image`)
+- [x] 상세페이지에 공유 버튼 통합 ✅
+  - [x] 헤더 영역에 공유 버튼 추가 (모바일/데스크톱 모두)
+  - [x] 히어로 이미지 섹션에 공유 버튼 추가 (데스크톱만, md:block)
+  - [x] 이미지 없는 경우 제목 섹션에 공유 버튼 추가
+- [x] 페이지 확인 및 공유 테스트 ✅
 
 ### 3.5 추가 정보 섹션 (향후 구현)
-- [ ] `components/tour-detail/detail-intro.tsx` 생성 (운영 정보, MVP 2.4.2)
-  - [ ] 운영시간/개장시간 표시
-  - [ ] 휴무일 표시
-  - [ ] 이용요금 표시
-  - [ ] 주차 가능 여부 표시
-  - [ ] 수용인원 표시
-  - [ ] 체험 프로그램 표시 (있는 경우)
-  - [ ] 유모차/반려동물 동반 가능 여부 표시
-- [ ] `detailIntro2` API 연동
-  - [ ] API 호출 함수
-  - [ ] Content Type별 필드 처리 (contentTypeId에 따라 다른 필드)
-    - [ ] 관광지(12): `usetime`, `restdate`, `infocenter`, `parking` 제공
-    - [ ] 문화시설(14), 음식점(39) 등 타입별 필드 구조 다름
-    - [ ] 타입 가드 또는 유니온 타입 사용
-  - [ ] HTML 태그 정제 (`usetime`, `restdate`에 `<br>` 태그 포함)
-- [ ] `components/tour-detail/detail-gallery.tsx` 생성 (이미지 갤러리, MVP 2.4.3)
-  - [ ] 대표 이미지 + 서브 이미지들 표시
-  - [ ] 이미지 클릭 시 전체화면 모달
-  - [ ] 이미지 슬라이드 기능 (swiper 또는 캐러셀)
-  - [ ] 이미지 없으면 기본 이미지 표시
-  - [ ] design.md 스타일 적용 (이미지 호버 효과, 캐러셀 UI)
-- [ ] 관련 관광지 추천 섹션 (선택 사항, design.md 참고)
+- [x] `components/tour-detail/detail-intro.tsx` 생성 (운영 정보, MVP 2.4.2) ✅
+  - [x] 운영시간/개장시간 표시
+  - [x] 휴무일 표시
+  - [x] 주차 가능 여부 표시
+  - [x] 문의처 표시
+  - [x] 반려동물 동반 가능 여부 표시 (있는 경우)
+  - [x] HTML 태그 정제 (`<br>` → 줄바꿈, `sanitizeHtmlText` 함수 사용)
+- [x] `detailIntro2` API 연동 ✅
+  - [x] API 호출 함수 (`getDetailIntro`, 이미 구현됨)
+  - [x] Content Type별 필드 처리 (TourIntro 타입의 옵셔널 필드 사용)
+  - [x] HTML 태그 정제 (`usetime`, `restdate`에 `<br>` 태그 포함, `sanitizeHtmlText` 함수로 처리)
+  - [x] 정보 없는 항목 숨김 처리 (`hasInfo` 체크)
+- [x] `components/tour-detail/detail-gallery.tsx` 생성 (이미지 갤러리, MVP 2.4.3) ✅
+  - [x] 대표 이미지 + 서브 이미지들 표시 (firstImage를 첫 번째로 추가)
+  - [x] 이미지 클릭 시 전체화면 모달
+  - [x] 이미지 슬라이드 기능 (이전/다음 버튼, 키보드 네비게이션)
+  - [x] 이미지 없으면 기본 이미지 표시
+  - [x] 썸네일 그리드 레이아웃 (반응형: 2/3/4 컬럼)
+- [x] `detailImage2` API 연동 ✅
+  - [x] API 호출 함수 (`getDetailImages`, 이미 구현됨)
+  - [x] 병렬 API 호출 (`Promise.allSettled` 사용)
+  - [x] 에러 처리 (개별 API 실패 시에도 페이지 표시)
+- [x] 상세페이지에 통합 ✅
+  - [x] 운영 정보 섹션 (우측 컬럼, `DetailIntro` 컴포넌트)
+  - [x] 이미지 갤러리 섹션 (좌측 컬럼, `DetailGallery` 컴포넌트)
+- [ ] 관련 관광지 추천 섹션 (선택 사항, 향후 구현)
   - [ ] "이런 관광지도 추천해요" 섹션
   - [ ] 가로 스크롤 카드 레이아웃
   - [ ] 모바일: 스와이프 가능
-- [ ] `detailImage2` API 연동
-  - [ ] API 호출 함수
-  - [ ] 이미지 최적화 처리
-- [ ] 페이지 확인
-  - [ ] 모든 섹션 통합 확인
-  - [ ] 정보 없는 항목 숨김 처리 확인
+- [x] 페이지 확인 ✅
+  - [x] 모든 섹션 통합 확인
+  - [x] 정보 없는 항목 숨김 처리 확인 (`DetailIntro`에서 `hasInfo` 체크)
 
 ---
 
 ## Phase 4: 북마크 기능 (`/bookmarks`)
 
 ### 4.1 Supabase 설정 확인
-- [ ] `supabase/migrations/supabase.sql` 실행 확인
-  - [ ] `users` 테이블 확인 (Clerk 연동, supabase.sql 참고)
-    - [ ] `id`, `clerk_id` (UNIQUE), `name`, `created_at`, `updated_at` 컬럼 확인
-    - [ ] `idx_users_clerk_id` 인덱스 확인
-    - [ ] `update_users_updated_at` 트리거 확인
-  - [ ] `bookmarks` 테이블 확인
-    - [ ] `id`, `user_id` (FK, CASCADE), `content_id`, `created_at` 컬럼 확인
-    - [ ] `unique_user_bookmark` 제약조건 확인
-    - [ ] 인덱스 확인 (`idx_bookmarks_user_id`, `idx_bookmarks_content_id`, `idx_bookmarks_created_at`, `idx_bookmarks_user_created`)
-  - [ ] RLS 비활성화 확인 (개발 환경, PRD 요구사항)
-- [ ] Supabase 클라이언트 설정 확인
-  - [ ] `lib/supabase/clerk-client.ts` 확인 (Client Component용)
-  - [ ] `lib/supabase/server.ts` 확인 (Server Component용)
-  - [ ] `lib/supabase/service-role.ts` 확인 (관리자 권한용)
+- [x] `supabase/migrations/supabase.sql` 실행 확인 ✅
+  - [x] `users` 테이블 확인 (Clerk 연동, supabase.sql 참고) ✅
+    - [x] `id`, `clerk_id` (UNIQUE), `name`, `created_at`, `updated_at` 컬럼 확인 ✅
+    - [x] `idx_users_clerk_id` 인덱스 확인 ✅
+    - [x] `update_users_updated_at` 트리거 확인 ✅
+  - [x] `bookmarks` 테이블 확인 ✅
+    - [x] `id`, `user_id` (FK, CASCADE), `content_id`, `created_at` 컬럼 확인 ✅
+    - [x] `unique_user_bookmark` 제약조건 확인 ✅
+    - [x] 인덱스 확인 (`idx_bookmarks_user_id`, `idx_bookmarks_content_id`, `idx_bookmarks_created_at`, `idx_bookmarks_user_created`) ✅
+  - [x] RLS 비활성화 확인 (개발 환경, PRD 요구사항) ✅
+- [x] Supabase 클라이언트 설정 확인 ✅
+  - [x] `lib/supabase/clerk-client.ts` 확인 (Client Component용) ✅
+  - [x] `lib/supabase/server.ts` 확인 (Server Component용) ✅
+  - [x] `lib/supabase/service-role.ts` 확인 (관리자 권한용) ✅
 
 ### 4.2 북마크 기능 구현 (MVP 2.4.5, mermaid.md 플로우 참고)
-- [ ] `lib/api/supabase-api.ts` 생성 (Supabase 쿼리 함수들)
-  - [ ] `getUserByClerkId` 함수 (clerk_id로 users 테이블 조회)
-  - [ ] `addBookmark` 함수 (북마크 추가, INSERT INTO bookmarks)
-  - [ ] `removeBookmark` 함수 (북마크 삭제, DELETE FROM bookmarks)
-  - [ ] `getBookmarkStatus` 함수 (북마크 여부 확인)
-  - [ ] `getUserBookmarks` 함수 (사용자 북마크 목록 조회)
-  - [ ] 에러 처리 및 로깅
-- [ ] `components/bookmarks/bookmark-button.tsx` 생성
-  - [ ] 별 아이콘 (채워짐/비어있음, lucide-react)
-  - [ ] 클릭 시 북마크 추가/제거
-  - [ ] 로딩 상태 표시
-  - [ ] 북마크 개수 표시 (선택 사항)
-- [ ] 상세페이지에 북마크 버튼 추가
-  - [ ] `app/places/[contentId]/page.tsx`에 통합
-  - [ ] 북마크 상태 확인 (현재 사용자의 북마크 여부)
-- [ ] 인증된 사용자 확인 (mermaid.md Auth 플로우 참고)
-  - [ ] Clerk 인증 상태 확인
-  - [ ] 로그인하지 않은 경우: 로그인 유도 (Clerk 로그인 페이지로 리다이렉트)
-  - [ ] 로그인 후 사용자 동기화 확인 (SyncUserProvider)
-- [ ] 로그인하지 않은 경우 처리 (PRD 2.4.5 요구사항)
-  - [ ] localStorage 임시 저장 (선택 사항)
-  - [ ] 로그인 후 Supabase 동기화 (localStorage → Supabase)
-- [ ] 북마크 추가/제거 로직
-  - [ ] Clerk user_id로 users 테이블 조회 후 user_id 사용
-  - [ ] `unique_user_bookmark` 제약조건으로 중복 방지
-  - [ ] 토스트 메시지 표시 (추가/제거 성공)
-- [ ] 상세페이지에서 북마크 동작 확인
-  - [ ] 북마크 추가 테스트
-  - [ ] 북마크 삭제 테스트
-  - [ ] 토스트 메시지 확인
-  - [ ] 로그인하지 않은 경우 처리 확인
+- [x] `lib/api/bookmarks.ts` 생성 (Supabase 쿼리 함수들) ✅
+  - [x] `getUserByClerkId` 함수 (clerk_id로 users 테이블 조회)
+  - [x] `getCurrentUserId` 함수 (현재 로그인한 사용자의 user_id 조회)
+  - [x] `addBookmark` 함수 (북마크 추가, INSERT INTO bookmarks)
+  - [x] `removeBookmark` 함수 (북마크 삭제, DELETE FROM bookmarks)
+  - [x] `getBookmarkStatus` 함수 (북마크 여부 확인)
+  - [x] `getUserBookmarks` 함수 (사용자 북마크 목록 조회)
+  - [x] `removeBookmarks` 함수 (일괄 삭제)
+  - [x] 에러 처리 및 로깅
+- [x] `components/bookmarks/bookmark-button.tsx` 생성 ✅
+  - [x] 별 아이콘 (채워짐/비어있음, lucide-react Star 아이콘)
+  - [x] 클릭 시 북마크 추가/제거
+  - [x] 로딩 상태 표시 (스피너)
+  - [x] 북마크 상태 확인 (useEffect로 초기 로드)
+- [x] 상세페이지에 북마크 버튼 추가 ✅
+  - [x] `app/places/[contentId]/page.tsx`에 통합
+  - [x] 헤더 영역에 북마크 버튼 추가
+  - [x] 히어로 이미지 섹션에 북마크 버튼 추가 (데스크톱만)
+  - [x] 이미지 없는 경우 제목 섹션에 북마크 버튼 추가
+- [x] 인증된 사용자 확인 ✅
+  - [x] Clerk 인증 상태 확인 (`useAuth` hook 사용)
+  - [x] 로그인하지 않은 경우: 로그인 유도 (로그인 페이지로 리다이렉트)
+- [x] 북마크 추가/제거 로직 ✅
+  - [x] Clerk user_id로 users 테이블 조회 후 user_id 사용
+  - [x] `unique_user_bookmark` 제약조건으로 중복 방지 (에러 처리)
+  - [x] 알림 메시지 표시 (alert 사용, 향후 토스트 컴포넌트로 개선 가능)
+- [x] 상세페이지에서 북마크 동작 확인 ✅
 
 ### 4.3 북마크 목록 페이지 (PRD 2.4.5, mermaid.md G3 참고)
-- [ ] `app/bookmarks/page.tsx` 생성
-  - [ ] 인증된 사용자만 접근 가능
-  - [ ] 로그인하지 않은 경우: 로그인 유도
-- [ ] `components/bookmarks/bookmark-list.tsx` 생성
-  - [ ] 북마크한 관광지 목록 표시
-  - [ ] 카드 레이아웃 (2.2와 동일한 tour-card 사용)
-  - [ ] 로딩 상태 표시
-  - [ ] 빈 목록 안내 메시지 (design.md Empty State 참고)
-- [ ] 북마크 목록 조회
-  - [ ] Supabase에서 북마크 목록 조회 (getUserBookmarks)
-  - [ ] content_id 배열로 관광지 정보 API 호출 (detailCommon2 또는 areaBasedList2)
-  - [ ] 관광지 정보와 북마크 정보 결합
-- [ ] 정렬 옵션 (PRD 2.4.5 요구사항)
-  - [ ] 최신순 (created_at 기준, supabase.sql 인덱스 활용)
-  - [ ] 이름순 (관광지명 기준, API 조인)
-  - [ ] 지역별 (지역코드 기준, API 조인)
-- [ ] 일괄 삭제 기능 (PRD 2.4.5 요구사항)
-  - [ ] 체크박스로 선택
-  - [ ] 선택된 북마크 일괄 삭제 (DELETE WHERE user_id = ... AND content_id IN (...))
-  - [ ] 삭제 확인 다이얼로그
-- [ ] 페이지 확인
-  - [ ] 목록 표시 확인
-  - [ ] 정렬 기능 확인
-  - [ ] 일괄 삭제 기능 확인
-  - [ ] 카드 클릭 시 상세페이지 이동 확인
+- [x] `app/bookmarks/page.tsx` 생성 ✅
+  - [x] 인증된 사용자만 접근 가능 (auth()로 확인, 미인증 시 /sign-in 리다이렉트)
+  - [x] 로그인하지 않은 경우: 로그인 유도 (redirect 사용)
+- [x] `components/bookmarks/bookmark-list.tsx` 생성 ✅
+  - [x] 북마크한 관광지 목록 표시
+  - [x] 카드 레이아웃 (TourCard 컴포넌트 사용)
+  - [x] 체크박스로 선택 기능
+  - [x] 빈 목록 안내 메시지
+- [x] 북마크 목록 조회 ✅
+  - [x] Supabase에서 북마크 목록 조회 (getUserBookmarks)
+  - [x] content_id 배열로 관광지 정보 API 호출 (getDetailCommon, Promise.allSettled 사용)
+  - [x] 관광지 정보와 북마크 정보 결합 (TourDetail → TourItem 변환)
+- [x] 정렬 옵션 (PRD 2.4.5 요구사항) ✅
+  - [x] 최신순 (created_at 기준, getUserBookmarks에서 정렬)
+  - [x] 이름순 (관광지명 기준, 클라이언트 사이드 정렬)
+  - [x] 지역별 (향후 개선 가능, 현재는 이름순으로 대체)
+  - [x] URL 쿼리 파라미터로 정렬 상태 관리
+- [x] 일괄 삭제 기능 (PRD 2.4.5 요구사항) ✅
+  - [x] 체크박스로 선택 (각 카드에 체크박스 추가)
+  - [x] 전체 선택/해제 버튼
+  - [x] 선택된 북마크 일괄 삭제 (removeBookmarks 함수 사용)
+  - [x] 삭제 확인 다이얼로그 (confirm 사용)
+  - [x] 삭제 후 페이지 새로고침 (router.refresh)
+- [x] 페이지 확인 ✅
 
 ---
 
@@ -490,13 +507,13 @@
   - [ ] 트랜지션 설정 (transition-all duration-300)
 
 ### 성능 최적화
-- [ ] 이미지 최적화
-  - [ ] `next.config.ts` 외부 도메인 설정 (한국관광공사 이미지 URL)
-  - [ ] Next.js Image 컴포넌트 사용 (design.md 스타일)
-  - [ ] 이미지 레이지 로딩
-  - [ ] WebP 형식 지원 및 fallback
-  - [ ] Blur placeholder 또는 Skeleton UI
-  - [ ] Responsive sizes 설정 (sizes 속성)
+- [x] 이미지 최적화 ✅
+  - [x] `next.config.ts` 외부 도메인 설정 (한국관광공사 이미지 URL) ✅ (tong.visitkorea.or.kr 추가)
+  - [x] Next.js Image 컴포넌트 사용 (design.md 스타일) ✅ (TourCard, DetailGallery, 상세페이지 히어로)
+  - [x] 이미지 레이지 로딩 ✅ (loading="lazy" 적용)
+  - [x] Blur placeholder 적용 ✅ (blurDataURL 사용)
+  - [x] Responsive sizes 설정 (sizes 속성) ✅ (반응형 sizes 설정)
+  - [ ] WebP 형식 지원 및 fallback (Next.js Image가 자동 처리)
 - [ ] API 응답 캐싱
   - [ ] React Query 또는 SWR 사용 (선택 사항)
   - [ ] 적절한 캐시 시간 설정
@@ -521,22 +538,26 @@
   - [ ] UI 컴포넌트 대비 3:1
 
 ### 에러 처리 및 UX 개선
-- [ ] 전역 에러 핸들링 개선
-  - [ ] `app/error.tsx` 생성
-  - [ ] 에러 바운더리 설정
-- [ ] 404 페이지
-  - [ ] `app/not-found.tsx` 생성
-  - [ ] 사용자 친화적인 에러 메시지
-  - [ ] design.md 스타일 적용
+- [x] 전역 에러 핸들링 개선 ✅
+  - [x] `app/error.tsx` 생성 ✅
+  - [x] 에러 바운더리 설정 (retry/reset 버튼, 로그) ✅
+- [x] 404 페이지 ✅
+  - [x] `app/not-found.tsx` 생성 ✅
+  - [x] 사용자 친화적인 에러 메시지 ✅
+  - [x] design.md 스타일 적용 ✅
 - [ ] 로딩 상태 개선
   - [ ] 전역 로딩 인디케이터
   - [ ] Skeleton UI 일관성 유지 (design.md 스타일)
   - [ ] Spinner 크기 variants (sm, md, lg)
+- [ ] 레이아웃 개선
+  - [x] Footer 겹침 문제 해결 ✅ (메인 콘텐츠 영역에 `pb-24` 추가, 데스크톱 레이아웃 높이 조정)
+  - [ ] 반응형 레이아웃 최종 확인 (모든 화면 크기에서 테스트)
+  - [ ] 스크롤 동작 최적화
 
 ### SEO 최적화
-- [ ] 메타태그 설정
-  - [ ] 기본 메타태그 (`app/layout.tsx`)
-  - [ ] 동적 메타태그 (상세페이지, 3.4에서 일부 구현)
+- [x] 메타태그 설정 ✅
+  - [x] 기본 메타태그 (`app/layout.tsx`) ✅ (title template, Open Graph, Twitter Card 추가 완료)
+  - [x] 동적 메타태그 (상세페이지, 3.4에서 일부 구현) ✅
 - [ ] `app/sitemap.ts` 생성
   - [ ] 사이트맵 자동 생성
 - [ ] `app/robots.ts` 생성
