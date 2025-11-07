@@ -34,14 +34,16 @@ import { Badge } from '@/components/ui/badge';
 interface TourCardProps {
   tour: TourItem;
   onClick?: () => void; // 추가 클릭 핸들러 (리스트-지도 연동용, 선택적)
+  priority?: boolean; // LCP 개선: 첫 번째 카드 이미지에 priority 설정
 }
 
 /**
  * 관광지 카드 컴포넌트
  * @param tour - TourItem 객체
  * @param onClick - 추가 클릭 핸들러 (선택적, 리스트-지도 연동용)
+ * @param priority - 이미지 priority 설정 (LCP 개선용, 첫 번째 카드에만 사용)
  */
-export function TourCard({ tour, onClick }: TourCardProps) {
+export function TourCard({ tour, onClick, priority = false }: TourCardProps) {
   // 이미지 URL 처리 (firstimage 또는 firstimage2)
   const imageUrl = tour.firstimage || tour.firstimage2;
   const hasImage = !!imageUrl;
@@ -64,13 +66,15 @@ export function TourCard({ tour, onClick }: TourCardProps) {
         {hasImage ? (
           <Image
             src={imageUrl}
-            alt={tour.title}
+            alt={`${tour.title} 썸네일 이미지`}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-300"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            loading="lazy"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            loading={priority ? undefined : 'lazy'}
+            priority={priority}
             placeholder="blur"
             blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+            fetchPriority={priority ? 'high' : 'auto'}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary-blue/20 to-primary-teal/20">

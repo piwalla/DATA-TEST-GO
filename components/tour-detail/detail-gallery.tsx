@@ -104,13 +104,14 @@ export function DetailGallery({ images, firstImage, title }: DetailGalleryProps)
             >
               <Image
                 src={img.thumbnail || img.url}
-                alt={img.name || `${title || '관광지'} 이미지 ${index + 1}`}
+                alt={img.name || `${title || '관광지'} 갤러리 이미지 ${index + 1}`}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                loading={index < 8 ? 'eager' : 'lazy'}
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                loading={index < 4 ? 'eager' : 'lazy'}
                 placeholder="blur"
                 blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWEREiMxUf/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
+                fetchPriority={index < 4 ? 'high' : 'auto'}
               />
               <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
             </button>
@@ -121,6 +122,9 @@ export function DetailGallery({ images, firstImage, title }: DetailGalleryProps)
       {/* 전체화면 모달 */}
       {selectedIndex !== null && (
         <div
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="gallery-modal-title"
           className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
           onClick={handleClose}
         >
@@ -131,6 +135,7 @@ export function DetailGallery({ images, firstImage, title }: DetailGalleryProps)
               size="icon"
               className="absolute top-4 right-4 text-white hover:bg-white/20"
               onClick={handleClose}
+              aria-label="갤러리 닫기"
             >
               <X className="h-6 w-6" />
             </Button>
@@ -145,16 +150,22 @@ export function DetailGallery({ images, firstImage, title }: DetailGalleryProps)
                   e.stopPropagation();
                   handlePrevious();
                 }}
+                aria-label="이전 이미지"
               >
                 <ChevronLeft className="h-8 w-8" />
               </Button>
             )}
 
+            {/* 모달 제목 (스크린 리더용) */}
+            <h2 id="gallery-modal-title" className="sr-only">
+              {title || '관광지'} 이미지 갤러리 ({selectedIndex + 1} / {allImages.length})
+            </h2>
+
             {/* 이미지 */}
             <div className="relative w-full h-full max-w-7xl max-h-[90vh]">
               <Image
                 src={allImages[selectedIndex].url}
-                alt={allImages[selectedIndex].name || `${title || '관광지'} 이미지`}
+                alt={allImages[selectedIndex].name || `${title || '관광지'} 갤러리 이미지`}
                 fill
                 className="object-contain"
                 sizes="100vw"
@@ -173,6 +184,7 @@ export function DetailGallery({ images, firstImage, title }: DetailGalleryProps)
                   e.stopPropagation();
                   handleNext();
                 }}
+                aria-label="다음 이미지"
               >
                 <ChevronRight className="h-8 w-8" />
               </Button>

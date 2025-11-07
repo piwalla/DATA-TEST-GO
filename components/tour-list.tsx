@@ -60,9 +60,13 @@ export function TourList({ tours, className, searchKeyword, onTourClick }: TourL
       role="list"
       aria-label="관광지 목록"
     >
-      {tours.map((tour) => (
+      {tours.map((tour, index) => (
         <div key={tour.contentid} role="listitem">
-          <TourCard tour={tour} onClick={onTourClick ? () => onTourClick(tour) : undefined} />
+          <TourCard 
+            tour={tour} 
+            onClick={onTourClick ? () => onTourClick(tour) : undefined}
+            priority={index === 0} // LCP 개선: 첫 번째 카드 이미지에 priority 설정
+          />
         </div>
       ))}
     </div>

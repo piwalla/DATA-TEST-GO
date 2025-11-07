@@ -22,7 +22,8 @@
 
 import { SignedOut, SignInButton, SignedIn, UserButton } from '@clerk/nextjs';
 import Link from 'next/link';
-import { Search, Menu } from 'lucide-react';
+import Image from 'next/image';
+import { Search, Menu, Bookmark, BarChart3 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
@@ -30,15 +31,34 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between px-4">
+    <>
+      {/* Skip to content 링크 (스크린 리더용) */}
+      <a
+        href="#main-content"
+        className="sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary-blue focus:text-white focus:rounded-md focus:ring-2 focus:ring-primary-blue focus:ring-offset-2"
+      >
+        메인 콘텐츠로 건너뛰기
+      </a>
+      <header
+        role="banner"
+        className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60"
+      >
+        <div className="container flex h-16 items-center justify-between px-4">
         {/* 로고 */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2" aria-label="홈으로 이동">
+          <Image
+            src="/piwalla.png"
+            alt="My Trip 로고"
+            width={32}
+            height={32}
+            className="h-8 w-8 object-contain"
+            priority
+          />
           <span className="text-2xl font-bold text-primary-blue">My Trip</span>
         </Link>
 
         {/* 데스크톱: 검색창 + 로그인 */}
-        <div className="hidden md:flex md:flex-1 md:items-center md:justify-center md:gap-4 md:px-8">
+        <nav aria-label="메인 네비게이션" className="hidden md:flex md:flex-1 md:items-center md:justify-center md:gap-4 md:px-8">
           {/* 검색창 (향후 구현) */}
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -50,7 +70,7 @@ export function Header() {
               aria-label="관광지 검색"
             />
           </div>
-        </div>
+        </nav>
 
         {/* 로그인/회원가입 버튼 */}
         <div className="flex items-center gap-2">
@@ -62,6 +82,28 @@ export function Header() {
             </SignInButton>
           </SignedOut>
           <SignedIn>
+            <Link href="/stats">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2"
+                aria-label="통계 대시보드"
+              >
+                <BarChart3 className="h-4 w-4" />
+                <span className="hidden sm:inline">통계</span>
+              </Button>
+            </Link>
+            <Link href="/bookmarks">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="gap-2"
+                aria-label="북마크 목록"
+              >
+                <Bookmark className="h-4 w-4" />
+                <span className="hidden sm:inline">북마크</span>
+              </Button>
+            </Link>
             <UserButton />
           </SignedIn>
 
@@ -79,7 +121,7 @@ export function Header() {
 
       {/* 모바일: 검색창 (햄버거 메뉴 열릴 때) */}
       {isMobileMenuOpen && (
-        <div className="border-t md:hidden">
+        <nav aria-label="모바일 검색" className="border-t md:hidden">
           <div className="container px-4 py-3">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -92,9 +134,10 @@ export function Header() {
               />
             </div>
           </div>
-        </div>
+        </nav>
       )}
     </header>
+    </>
   );
 }
 

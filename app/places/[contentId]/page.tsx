@@ -29,7 +29,7 @@ import { sanitizeOverview, extractHomepageUrl, formatAddress } from '@/lib/utils
 import { getContentTypeName } from '@/lib/types/tour';
 import { Badge } from '@/components/ui/badge';
 import { CopyAddressButton } from '@/components/tour-detail/copy-address-button';
-import { DetailMap } from '@/components/tour-detail/detail-map';
+import { DetailMapWrapper } from '@/components/tour-detail/detail-map-wrapper';
 import { ShareButton } from '@/components/tour-detail/share-button';
 import { DetailIntro } from '@/components/tour-detail/detail-intro';
 import { DetailGallery } from '@/components/tour-detail/detail-gallery';
@@ -59,10 +59,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     console.log('[generateMetadata] 관광지 정보 조회 완료:', tourDetail.title);
 
-    // 개요를 100자 이내로 제한
-    const description = tourDetail.overview
-      ? sanitizeOverview(tourDetail.overview).slice(0, 100).replace(/\n/g, ' ') + '...'
-      : `${tourDetail.title} - 한국 관광지 정보`;
+    // 개요를 155자 이내로 제한 (Google 권장 150-160자)
+    const sanitizedOverview = tourDetail.overview
+      ? sanitizeOverview(tourDetail.overview).replace(/\n/g, ' ').trim()
+      : '';
+    
+    const description = sanitizedOverview
+      ? (sanitizedOverview.length > 155
+          ? sanitizedOverview.slice(0, 155).trim() + '...'
+          : sanitizedOverview)
+      : `${tourDetail.title} - 한국 관광지 정보 서비스. 주소: ${tourDetail.addr1 || '정보 없음'}`;
 
     // 현재 페이지 URL 생성
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
@@ -210,7 +216,7 @@ export default async function TourDetailPage({ params }: PageProps) {
         <div className="relative w-full h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden">
           <Image
             src={tourDetail.firstimage}
-            alt={tourDetail.title}
+            alt={`${tourDetail.title} 대표 이미지`}
             fill
             className="object-cover"
             sizes="100vw"
@@ -354,7 +360,7 @@ export default async function TourDetailPage({ params }: PageProps) {
             {/* 지도 섹션 */}
             <div className="bg-card rounded-xl border p-6">
               <h2 className="text-xl font-semibold mb-4">위치 정보</h2>
-              <DetailMap tour={tourDetail} />
+              <DetailMapWrapper tour={tourDetail} />
             </div>
           </div>
         </div>
